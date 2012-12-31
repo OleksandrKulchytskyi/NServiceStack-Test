@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NPatterns.Messaging.IoC</name>
+    </assembly>
+    <members>
+        <member name="T:NPatterns.Messaging.IoC.MessageBus">
+            <summary>
+            implement MessageBus with ServiceLocator to get all Handlers
+            </summary>
+        </member>
+    </members>
+</doc>

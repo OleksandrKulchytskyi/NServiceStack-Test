@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>NPatterns.Messaging.IoC</id>
+    <version>1.0.4688</version>
+    <title>NPatterns.Messaging.IoC</title>
+    <authors>Tao Wang</authors>
+    <owners>Tao Wang</owners>
+    <licenseUrl>http://opensource.org/licenses/ms-pl.html</licenseUrl>
+    <projectUrl>https://github.com/moonavw/NPatterns</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>implement the IMessageBus based on the basic MessageBus with ServiceLocator</description>
+    <releaseNotes>support order of handling</releaseNotes>
+    <language>en-US</language>
+    <tags>patterns</tags>
+    <dependencies>
+      <dependency id="CommonServiceLocator" version="1.0" />
+      <dependency id="NPatterns" version="1.0.4688" />
+    </dependencies>
+  </metadata>
+</package>

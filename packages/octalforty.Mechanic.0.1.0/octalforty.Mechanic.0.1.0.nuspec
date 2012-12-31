@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>octalforty.Mechanic</id>
+    <version>0.1.0</version>
+    <title>octalforty Mechanic</title>
+    <authors>octalforty studios</authors>
+    <owners>octalforty studios</owners>
+    <projectUrl>https://bitbucket.org/anton_gogolev/octalforty-mechanic</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>octalforty Mechanic is a nice and simple lighweight embeddable message bus for .NET.</description>
+    <summary>octalforty Mechanic is a nice and simple lighweight embeddable message bus for .NET.</summary>
+    <tags>publish subscribe messagebus messaging message-bus</tags>
+    <dependencies>
+      <dependency id="newtonsoft.json" version="3.5" />
+      <dependency id="nlog" version="2.0" />
+    </dependencies>
+  </metadata>
+</package>
