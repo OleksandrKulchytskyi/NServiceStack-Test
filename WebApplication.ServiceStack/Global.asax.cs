@@ -11,6 +11,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using ServiceStack.Redis;
+using ServiceStack.ServiceInterface.Validation;
+using ServiceStack.Logging;
+using ServiceStack.Logging.Support.Logging;
+using ServiceStack.Logging.Elmah;
+using ServiceStack.MiniProfiler;
+using ServiceStack.MiniProfiler.Data;
+using ServiceStack.ServiceInterface.Admin;
 
 namespace WebApplication.ServiceStack
 {
@@ -37,7 +45,19 @@ namespace WebApplication.ServiceStack
 
 				Plugins.Add(new RegistrationFeature());
 
+				//register validators
+				Plugins.Add(new ValidationFeature());
+				container.RegisterValidators(typeof(Common.Entry).Assembly, typeof(EntryService).Assembly);
+
+
+				//request logs
+				Plugins.Add(new RequestLogsFeature()); // added ability to view request via http:/..../requestlogs
+
+				//cache registration 
 				container.Register<ICacheClient>(new MemoryCacheClient());
+				//container.Register<IRedisClientsManager>(new PooledRedisClientManager());
+				//container.Register<ICacheClient>(r => (ICacheClient)r.Resolve<IRedisClientsManager>().GetCacheClient());
+
 				var userRepository = new InMemoryAuthRepository();
 				container.Register<IUserAuthRepository>(userRepository);
 
@@ -63,8 +83,13 @@ namespace WebApplication.ServiceStack
 				container.RegisterAutoWired<TrackedDataRepository>().ReusedWithin(Funq.ReuseScope.Default);
 				container.RegisterAutoWired<TrackedDataRepository2>().ReusedWithin(Funq.ReuseScope.Default);
 
-				var dbConFactory=new OrmLiteConnectionFactory(HttpContext.Current.Server.MapPath("~/App_Data/data.txt"), SqliteDialect.Provider);
+				var dbConFactory = new OrmLiteConnectionFactory(HttpContext.Current.Server.MapPath("~/App_Data/data.txt"), SqliteDialect.Provider)
+				{
+					ConnectionFilter = x => new ProfiledDbConnection(x, Profiler.Current)
+				};
 				container.Register<IDbConnectionFactory>(dbConFactory);
+
+				SetConfig(new EndpointHostConfig { DebugMode = true });
 			}
 		}
 
@@ -80,7 +105,13 @@ namespace WebApplication.ServiceStack
 
 		protected void Application_BeginRequest(object sender, EventArgs e)
 		{
+			if (Request.IsLocal)
+				Profiler.Start();
+		}
 
+		protected void Application_EndRequest(object sender, EventArgs e)
+		{
+			Profiler.Stop();
 		}
 
 		protected void Application_AuthenticateRequest(object sender, EventArgs e)

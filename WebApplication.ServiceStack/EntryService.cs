@@ -9,6 +9,7 @@ using ServiceStack.OrmLite.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using ServiceStack.Common;
 
 namespace WebApplication.ServiceStack
 {
@@ -20,6 +21,9 @@ namespace WebApplication.ServiceStack
 
 		public object Post(Entry request)
 		{
+			var cacheKey = UrnId.Create<StatusQuery>(request.Time.ToShortDateString());
+			base.RequestContext.RemoveFromCache(base.Cache, cacheKey);
+
 			Repos.AddEntry(request);
 
 			return new EntryResponse() { Id = 1 };
