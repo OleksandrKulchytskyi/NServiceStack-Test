@@ -19,6 +19,8 @@ using ServiceStack.Logging.Elmah;
 using ServiceStack.MiniProfiler;
 using ServiceStack.MiniProfiler.Data;
 using ServiceStack.ServiceInterface.Admin;
+using ServiceStack.Redis.Messaging;
+using Common;
 
 namespace WebApplication.ServiceStack
 {
@@ -55,7 +57,7 @@ namespace WebApplication.ServiceStack
 
 				//cache registration 
 				container.Register<ICacheClient>(new MemoryCacheClient());
-				//container.Register<IRedisClientsManager>(new PooledRedisClientManager());
+				container.Register<IRedisClientsManager>(new PooledRedisClientManager("localhost:6379"));
 				//container.Register<ICacheClient>(r => (ICacheClient)r.Resolve<IRedisClientsManager>().GetCacheClient());
 
 				var userRepository = new InMemoryAuthRepository();
@@ -90,6 +92,11 @@ namespace WebApplication.ServiceStack
 				container.Register<IDbConnectionFactory>(dbConFactory);
 
 				SetConfig(new EndpointHostConfig { DebugMode = true });
+
+				var mqService = new RedisMqServer(container.Resolve<IRedisClientsManager>());
+				mqService.RegisterHandler<Entry>(ServiceController.ExecuteMessage);
+				mqService.Start();
+
 			}
 		}
 
