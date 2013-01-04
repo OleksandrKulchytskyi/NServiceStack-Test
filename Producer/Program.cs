@@ -7,6 +7,7 @@ using ServiceStack.WebHost.Endpoints;
 using Common;
 using ServiceStack.Redis;
 using ServiceStack.Redis.Messaging;
+using ServiceStack.Messaging;
 
 namespace Producer
 {
@@ -41,14 +42,26 @@ namespace Producer
 			var redisfactrory = new PooledRedisClientManager("localhost:6379");
 			_mqHost = new RedisMqHost(redisfactrory);
 
+			_mqHost.RegisterHandler<EntryResponse>(message =>
+			{
+				Console.WriteLine("Got message id {0}", message.GetBody().Id);
+				return null;
+			});
+
 			_mqHost.Start();
 		}
 
 		public void SendMessage()
 		{
-			using (var mqClient=_mqHost.CreateMessageQueueClient())
+			using (var mqClient = _mqHost.CreateMessageQueueClient())
 			{
-				mqClient.Publish(new Entry() { Amount = 24, Time = DateTime.Now });
+				var uniqueQ = "mq:c1" + ":" + Guid.NewGuid().ToString("N");
+				var message = new Message<Entry>(new Entry() { Amount = 24, Time = DateTime.Now }) { ReplyTo = uniqueQ };
+
+				mqClient.Publish(message);
+				var response = mqClient.Get(uniqueQ, new TimeSpan(0, 0, 1, 0)).ToMessage<EntryResponse>();
+				Console.WriteLine("Got response with id {0}", response.GetBody().Id);
+
 			}
 
 		}

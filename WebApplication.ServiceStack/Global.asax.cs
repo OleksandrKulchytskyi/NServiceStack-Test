@@ -21,6 +21,7 @@ using ServiceStack.MiniProfiler.Data;
 using ServiceStack.ServiceInterface.Admin;
 using ServiceStack.Redis.Messaging;
 using Common;
+using ServiceStack.Razor;
 
 namespace WebApplication.ServiceStack
 {
@@ -97,6 +98,8 @@ namespace WebApplication.ServiceStack
 				mqService.RegisterHandler<Entry>(ServiceController.ExecuteMessage);
 				mqService.Start();
 
+				//install Razor 
+				Plugins.Add(new RazorFormat());
 			}
 		}
 

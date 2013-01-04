@@ -24,9 +24,9 @@ namespace WebApplication.ServiceStack
 			var cacheKey = UrnId.Create<StatusQuery>(request.Time.ToShortDateString());
 			base.RequestContext.RemoveFromCache(base.Cache, cacheKey);
 
-			Repos.AddEntry(request);
+			int id=Repos.AddEntry(request);
 
-			return new EntryResponse() { Id = 1 };
+			return new EntryResponse() { Id = id };
 		}
 	}
 

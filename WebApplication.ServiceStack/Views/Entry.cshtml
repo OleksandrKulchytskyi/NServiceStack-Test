@@ -1,0 +1,14 @@
+﻿@inherits ViewPage<EntryResponse>
+	<div>
+		@{
+	     	if(Mode;.Id!=0){
+		     <div>Last id for entered entry was: @Model.Id </div>
+		     }
+		}
+	</div>
+
+	<form action="/entry">
+		@Html.TextBox("amount","0");
+		@Html.Hidden("entryTime");
+		<button type="submit">Submit entry</button>
+	</form>

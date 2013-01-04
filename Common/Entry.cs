@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Common
 {
-	[Route("/entry", "POST")]
+	[Route("/entry")]
 	[Route("/entry/{Amount}/{Time}", "POST")]
 	public class Entry
 	{
